@@ -4,62 +4,76 @@ import java.util.LinkedList;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
-/**
- * UC8 & UC11: Node structure for Custom Linked List
- */
+// ==========================================
+// UC8 & UC11: Supporting Classes
+// ==========================================
 class Node {
     char data;
     Node next;
     Node(char data) { this.data = data; this.next = null; }
 }
 
+// ==========================================
+// UC12: Strategy Pattern Implementation
+// ==========================================
+
 /**
- * UC11: Object-Oriented Palindrome Service
- * Goal: Encapsulate palindrome logic in a dedicated class.
- * Principles: Encapsulation & Single Responsibility Principle (SRP).
+ * Strategy Interface
  */
-class PalindromeService {
-    // Encapsulation: Private data member
-    private String input;
+interface PalindromeStrategy {
+    boolean isPalindrome(String input);
+}
 
-    // Constructor to initialize data
-    public PalindromeService(String input) {
-        this.input = input;
-    }
-
-    /**
-     * Logic to check palindrome using an internal Stack (LIFO).
-     * This separates the 'How' from the 'Where' (Driver class).
-     */
-    public boolean checkPalindrome() {
-        if (input == null) return false;
-
-        // Normalization: Removing spaces and converting to lowercase
+/**
+ * Concrete Strategy 1: Using a Stack (LIFO)
+ */
+class StackStrategy implements PalindromeStrategy {
+    @Override
+    public boolean isPalindrome(String input) {
         String clean = input.replaceAll("\\s+", "").toLowerCase();
-
-        // Data Structure: Internal Stack
         Stack<Character> stack = new Stack<>();
-        for (char c : clean.toCharArray()) {
-            stack.push(c);
-        }
-
+        for (char c : clean.toCharArray()) stack.push(c);
         StringBuilder reversed = new StringBuilder();
-        while (!stack.isEmpty()) {
-            reversed.append(stack.pop());
-        }
-
+        while (!stack.isEmpty()) reversed.append(stack.pop());
         return clean.equals(reversed.toString());
-    }
-
-    // Getter to access encapsulated input
-    public String getInput() {
-        return this.input;
     }
 }
 
 /**
- * Main Application Class
+ * Concrete Strategy 2: Using a Deque (Double-Ended Queue)
  */
+class DequeStrategy implements PalindromeStrategy {
+    @Override
+    public boolean isPalindrome(String input) {
+        String clean = input.replaceAll("\\s+", "").toLowerCase();
+        Deque<Character> deque = new ArrayDeque<>();
+        for (char c : clean.toCharArray()) deque.addLast(c);
+        while (deque.size() > 1) {
+            if (!deque.removeFirst().equals(deque.removeLast())) return false;
+        }
+        return true;
+    }
+}
+
+/**
+ * Context Class for Strategy Pattern (Used in UC11/12 logic)
+ */
+class PalindromeService {
+    private PalindromeStrategy strategy;
+
+    // Set strategy at runtime (Polymorphism)
+    public void setStrategy(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public boolean check(String text) {
+        return strategy.isPalindrome(text);
+    }
+}
+
+// ==========================================
+// MAIN APPLICATION
+// ==========================================
 public class PalindromeChecker {
 
     public static void main(String[] args) {
@@ -72,27 +86,27 @@ public class PalindromeChecker {
         checkWithDeque(); // UC7
         checkWithLinkedList(); // UC8
 
-        // UC9: Recursion
+        // UC9 - Recursion
         String recWord = "rotator";
         boolean res9 = isPalindromeRecursive(recWord, 0, recWord.length() - 1);
         System.out.println("UC9 (Recursion): " + recWord + (res9 ? " is a palindrome." : " is not a palindrome."));
 
-        // UC10: Normalization
+        // UC10 - Normalization
         checkWithNormalization();
 
-        // UC11: Object-Oriented Service call
-        performOOServiceCheck();
+        // UC11 & UC12 - OOPS & Strategy Pattern
+        checkWithStrategyPattern();
     }
 
-    // UC1: Welcome Message
+    // UC1
     public static void displayWelcomeMessage() {
         System.out.println("------------------------------------------");
         System.out.println("Welcome to the Palindrome Checker App");
-        System.out.println("Version: 1.0.0");
+        System.out.println("Version: 1.0.0 (Strategy Pattern Ready)");
         System.out.println("------------------------------------------");
     }
 
-    // UC2: Basic Check
+    // UC2
     public static void checkHardcodedPalindrome() {
         String original = "madam";
         String reversed = "";
@@ -100,7 +114,7 @@ public class PalindromeChecker {
         System.out.println("UC2 (Hardcoded): " + original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC3: Manual Reversal
+    // UC3
     public static void checkWithManualReversal() {
         String original = "radar";
         String reversed = "";
@@ -108,7 +122,7 @@ public class PalindromeChecker {
         System.out.println("UC3 (Manual Loop): " + original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC4: Char Array Two-Pointer
+    // UC4
     public static void checkWithCharArray() {
         String original = "level";
         char[] arr = original.toCharArray();
@@ -119,7 +133,7 @@ public class PalindromeChecker {
         System.out.println("UC4 (Char Array): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC5: Stack (LIFO)
+    // UC5
     public static void checkWithStack() {
         String original = "noon";
         Stack<Character> stack = new Stack<>();
@@ -129,7 +143,7 @@ public class PalindromeChecker {
         System.out.println("UC5 (Stack): " + original + (original.equals(rev) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC6: Queue + Stack
+    // UC6
     public static void checkWithQueueAndStack() {
         String original = "racecar";
         Queue<Character> q = new LinkedList<>();
@@ -142,7 +156,7 @@ public class PalindromeChecker {
         System.out.println("UC6 (Queue+Stack): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC7: Deque
+    // UC7
     public static void checkWithDeque() {
         String original = "deified";
         Deque<Character> dq = new ArrayDeque<>();
@@ -154,7 +168,7 @@ public class PalindromeChecker {
         System.out.println("UC7 (Deque): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC8: Linked List
+    // UC8
     public static void checkWithLinkedList() {
         String original = "malayalam";
         Node head = null, temp = null;
@@ -163,7 +177,6 @@ public class PalindromeChecker {
             if (head == null) { head = newNode; temp = head; }
             else { temp.next = newNode; temp = temp.next; }
         }
-        // Finding middle and reversing half
         Node slow = head, fast = head;
         while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
         Node prev = null, curr = slow;
@@ -177,18 +190,17 @@ public class PalindromeChecker {
         System.out.println("UC8 (Linked List): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC9: Recursion
+    // UC9
     public static boolean isPalindromeRecursive(String str, int start, int end) {
         if (start >= end) return true;
         if (str.charAt(start) != str.charAt(end)) return false;
         return isPalindromeRecursive(str, start + 1, end - 1);
     }
 
-    // UC10: Normalization (Spaces and Case)
+    // UC10
     public static void checkWithNormalization() {
         String input = "Step on no pets";
         String clean = input.replaceAll("\\s+", "").toLowerCase();
-
         boolean isPal = true;
         for (int i = 0, j = clean.length() - 1; i < j; i++, j--) {
             if (clean.charAt(i) != clean.charAt(j)) { isPal = false; break; }
@@ -196,15 +208,17 @@ public class PalindromeChecker {
         System.out.println("UC10 (Normalization): '" + input + "' " + (isPal ? "is a palindrome." : "is not a palindrome."));
     }
 
-    // UC11: Execution Logic for OOPS Service
-    public static void performOOServiceCheck() {
-        // Instantiate the service with a complex sentence
-        PalindromeService service = new PalindromeService("Was it a car or a cat I saw");
+    // UC11 & UC12 Implementation
+    public static void checkWithStrategyPattern() {
+        String testInput = "Never odd or even";
+        PalindromeService service = new PalindromeService();
 
-        // Use the checkPalindrome method
-        boolean result = service.checkPalindrome();
+        // Dynamically injecting Stack Strategy
+        service.setStrategy(new StackStrategy());
+        System.out.println("UC12 (Strategy - Stack): " + testInput + " -> " + service.check(testInput));
 
-        System.out.println("UC11 (OOPS Service): '" + service.getInput() + "' " +
-                (result ? "is a palindrome." : "is not a palindrome."));
+        // Dynamically switching to Deque Strategy
+        service.setStrategy(new DequeStrategy());
+        System.out.println("UC12 (Strategy - Deque): " + testInput + " -> " + service.check(testInput));
     }
 }
