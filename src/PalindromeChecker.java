@@ -4,6 +4,15 @@ import java.util.LinkedList;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
+class Node {
+    char data;
+    Node next;
+    Node(char data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
 public class PalindromeChecker {
     public static void main(String[] args) {
         displayWelcomeMessage();
@@ -13,9 +22,10 @@ public class PalindromeChecker {
         checkWithStack();
         checkWithQueueAndStack();
         checkWithDeque();
+        checkWithLinkedList();
     }
 
-    // UC1: Welcome Message
+    // UC1
     public static void displayWelcomeMessage() {
         System.out.println("------------------------------------------");
         System.out.println("Welcome to the Palindrome Checker App");
@@ -23,116 +33,96 @@ public class PalindromeChecker {
         System.out.println("------------------------------------------");
     }
 
-    // UC2: Hardcoded String Check
+    // UC2
     public static void checkHardcodedPalindrome() {
         String original = "madam";
         String reversed = "";
-        for (int i = original.length() - 1; i >= 0; i--) {
-            reversed += original.charAt(i);
-        }
-        if (original.equals(reversed)) {
-            System.out.println(original + " is a palindrome.");
-        } else {
-            System.out.println(original + " is not a palindrome.");
-        }
+        for (int i = original.length() - 1; i >= 0; i--) reversed += original.charAt(i);
+        System.out.println(original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC3: Manual String Reversal
+    // UC3
     public static void checkWithManualReversal() {
         String original = "radar";
         String reversed = "";
-        for (int i = original.length() - 1; i >= 0; i--) {
-            reversed = reversed + original.charAt(i);
-        }
-        if (original.equals(reversed)) {
-            System.out.println(original + " is a palindrome.");
-        } else {
-            System.out.println(original + " is not a palindrome.");
-        }
+        for (int i = original.length() - 1; i >= 0; i--) reversed = reversed + original.charAt(i);
+        System.out.println(original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC4: Two-Pointer with Character Array
+    // UC4
     public static void checkWithCharArray() {
         String original = "level";
-        char[] charArray = original.toCharArray();
-        boolean isPalindrome = true;
-        int left = 0;
-        int right = charArray.length - 1;
-        while (left < right) {
-            if (charArray[left] != charArray[right]) {
-                isPalindrome = false;
-                break;
-            }
-            left++;
-            right--;
+        char[] arr = original.toCharArray();
+        boolean isPal = true;
+        for (int i = 0, j = arr.length - 1; i < j; i++, j--) {
+            if (arr[i] != arr[j]) { isPal = false; break; }
         }
-        if (isPalindrome) {
-            System.out.println(original + " is a palindrome.");
-        } else {
-            System.out.println(original + " is not a palindrome.");
-        }
+        System.out.println(original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC5: Stack-Based Reversal
+    // UC5
     public static void checkWithStack() {
         String original = "noon";
         Stack<Character> stack = new Stack<>();
-        for (int i = 0; i < original.length(); i++) {
-            stack.push(original.charAt(i));
-        }
-        String reversed = "";
-        while (!stack.isEmpty()) {
-            reversed += stack.pop();
-        }
-        if (original.equals(reversed)) {
-            System.out.println(original + " is a palindrome.");
-        } else {
-            System.out.println(original + " is not a palindrome.");
-        }
+        for (char c : original.toCharArray()) stack.push(c);
+        String rev = "";
+        while (!stack.isEmpty()) rev += stack.pop();
+        System.out.println(original + (original.equals(rev) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC6: Queue + Stack Comparison
+    // UC6
     public static void checkWithQueueAndStack() {
         String original = "racecar";
-        Queue<Character> queue = new LinkedList<>();
-        Stack<Character> stack = new Stack<>();
-        for (int i = 0; i < original.length(); i++) {
-            char ch = original.charAt(i);
-            queue.add(ch);
-            stack.push(ch);
+        Queue<Character> q = new LinkedList<>();
+        Stack<Character> s = new Stack<>();
+        for (char c : original.toCharArray()) { q.add(c); s.push(c); }
+        boolean isPal = true;
+        while (!q.isEmpty()) {
+            if (!q.remove().equals(s.pop())) { isPal = false; break; }
         }
-        boolean isPalindrome = true;
-        while (!queue.isEmpty()) {
-            if (!queue.remove().equals(stack.pop())) {
-                isPalindrome = false;
-                break;
-            }
-        }
-        if (isPalindrome) {
-            System.out.println(original + " is a palindrome.");
-        } else {
-            System.out.println(original + " is not a palindrome.");
-        }
+        System.out.println(original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC7: Deque-Based Optimized Check
+    // UC7
     public static void checkWithDeque() {
         String original = "deified";
-        Deque<Character> deque = new ArrayDeque<>();
-        for (int i = 0; i < original.length(); i++) {
-            deque.addLast(original.charAt(i));
+        Deque<Character> dq = new ArrayDeque<>();
+        for (char c : original.toCharArray()) dq.addLast(c);
+        boolean isPal = true;
+        while (dq.size() > 1) {
+            if (!dq.removeFirst().equals(dq.removeLast())) { isPal = false; break; }
         }
-        boolean isPalindrome = true;
-        while (deque.size() > 1) {
-            if (!deque.removeFirst().equals(deque.removeLast())) {
-                isPalindrome = false;
-                break;
-            }
+        System.out.println(original + (isPal ? " is a palindrome." : " is not a palindrome."));
+    }
+
+    // UC8
+    public static void checkWithLinkedList() {
+        String original = "malayalam";
+        Node head = null, temp = null;
+        for (char ch : original.toCharArray()) {
+            Node newNode = new Node(ch);
+            if (head == null) { head = newNode; temp = head; }
+            else { temp.next = newNode; temp = temp.next; }
         }
-        if (isPalindrome) {
-            System.out.println(original + " is a palindrome.");
-        } else {
-            System.out.println(original + " is not a palindrome.");
+
+        boolean isPal = true;
+        Node slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
         }
+        Node prev = null, curr = slow;
+        while (curr != null) {
+            Node nextN = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextN;
+        }
+        Node f = head, s = prev;
+        while (s != null) {
+            if (f.data != s.data) { isPal = false; break; }
+            f = f.next; s = s.next;
+        }
+        System.out.println(original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 }
