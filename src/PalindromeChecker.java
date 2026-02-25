@@ -4,55 +4,34 @@ import java.util.LinkedList;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
-/**
- * Node class to support Singly Linked List operations (UC8)
- */
 class Node {
     char data;
     Node next;
-
-    Node(char data) {
-        this.data = data;
-        this.next = null;
-    }
+    Node(char data) { this.data = data; this.next = null; }
 }
 
 public class PalindromeChecker {
 
     public static void main(String[] args) {
-        // UC1: Startup and Welcome
-        displayWelcomeMessage();
+        displayWelcomeMessage(); // UC1
+        checkHardcodedPalindrome(); // UC2
+        checkWithManualReversal(); // UC3
+        checkWithCharArray(); // UC4
+        checkWithStack(); // UC5
+        checkWithQueueAndStack(); // UC6
+        checkWithDeque(); // UC7
+        checkWithLinkedList(); // UC8
 
-        // UC2: Basic Hardcoded Check
-        checkHardcodedPalindrome();
+        // UC9 - Recursion
+        String recWord = "rotator";
+        boolean res9 = isPalindromeRecursive(recWord, 0, recWord.length() - 1);
+        System.out.println("UC9 (Recursion): " + recWord + (res9 ? " is a palindrome." : " is not a palindrome."));
 
-        // UC3: Manual String Reversal with Loop
-        checkWithManualReversal();
-
-        // UC4: Character Array with Two-Pointer Technique
-        checkWithCharArray();
-
-        // UC5: Stack-Based Reversal (LIFO)
-        checkWithStack();
-
-        // UC6: Queue (FIFO) and Stack (LIFO) Comparison
-        checkWithQueueAndStack();
-
-        // UC7: Deque (Double-Ended Queue) Comparison
-        checkWithDeque();
-
-        // UC8: Singly Linked List with In-Place Reversal
-        checkWithLinkedList();
-
-        // UC9: Recursive Palindrome Check
-        String recursiveWord = "rotator";
-        boolean isRecPal = isPalindromeRecursive(recursiveWord, 0, recursiveWord.length() - 1);
-        System.out.println("UC9 (Recursion): " + recursiveWord + (isRecPal ? " is a palindrome." : " is not a palindrome."));
+        // UC10 - Preprocessing/Normalization
+        checkWithNormalization();
     }
 
-    /**
-     * UC1: Displays the application header
-     */
+    // UC1: Welcome Message
     public static void displayWelcomeMessage() {
         System.out.println("------------------------------------------");
         System.out.println("Welcome to the Palindrome Checker App");
@@ -60,52 +39,34 @@ public class PalindromeChecker {
         System.out.println("------------------------------------------");
     }
 
-    /**
-     * UC2: Demonstrates simple string comparison using += operator
-     */
+    // UC2: Basic Check
     public static void checkHardcodedPalindrome() {
         String original = "madam";
         String reversed = "";
-        for (int i = original.length() - 1; i >= 0; i--) {
-            reversed += original.charAt(i);
-        }
+        for (int i = original.length() - 1; i >= 0; i--) reversed += original.charAt(i);
         System.out.println("UC2 (Hardcoded): " + original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    /**
-     * UC3: Focuses on string immutability and manual reversal logic
-     */
+    // UC3: Manual Reversal
     public static void checkWithManualReversal() {
         String original = "radar";
         String reversed = "";
-        for (int i = original.length() - 1; i >= 0; i--) {
-            reversed = reversed + original.charAt(i);
-        }
+        for (int i = original.length() - 1; i >= 0; i--) reversed = reversed + original.charAt(i);
         System.out.println("UC3 (Manual Loop): " + original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    /**
-     * UC4: Optimized two-pointer approach using a char array
-     */
+    // UC4: Char Array Two-Pointer
     public static void checkWithCharArray() {
         String original = "level";
         char[] arr = original.toCharArray();
         boolean isPal = true;
-        int left = 0, right = arr.length - 1;
-        while (left < right) {
-            if (arr[left] != arr[right]) {
-                isPal = false;
-                break;
-            }
-            left++;
-            right--;
+        for (int i = 0, j = arr.length - 1; i < j; i++, j--) {
+            if (arr[i] != arr[j]) { isPal = false; break; }
         }
         System.out.println("UC4 (Char Array): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    /**
-     * UC5: Uses Stack's Last-In-First-Out (LIFO) property to reverse
-     */
+    // UC5: Stack (LIFO)
     public static void checkWithStack() {
         String original = "noon";
         Stack<Character> stack = new Stack<>();
@@ -115,47 +76,32 @@ public class PalindromeChecker {
         System.out.println("UC5 (Stack): " + original + (original.equals(rev) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    /**
-     * UC6: Compares Queue (FIFO) vs Stack (LIFO) behavior
-     */
+    // UC6: Queue + Stack
     public static void checkWithQueueAndStack() {
         String original = "racecar";
         Queue<Character> q = new LinkedList<>();
         Stack<Character> s = new Stack<>();
-        for (char c : original.toCharArray()) {
-            q.add(c);
-            s.push(c);
-        }
+        for (char c : original.toCharArray()) { q.add(c); s.push(c); }
         boolean isPal = true;
         while (!q.isEmpty()) {
-            if (!q.remove().equals(s.pop())) {
-                isPal = false;
-                break;
-            }
+            if (!q.remove().equals(s.pop())) { isPal = false; break; }
         }
         System.out.println("UC6 (Queue+Stack): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    /**
-     * UC7: Uses Deque to shrink the word from both ends simultaneously
-     */
+    // UC7: Deque
     public static void checkWithDeque() {
         String original = "deified";
         Deque<Character> dq = new ArrayDeque<>();
         for (char c : original.toCharArray()) dq.addLast(c);
         boolean isPal = true;
         while (dq.size() > 1) {
-            if (!dq.removeFirst().equals(dq.removeLast())) {
-                isPal = false;
-                break;
-            }
+            if (!dq.removeFirst().equals(dq.removeLast())) { isPal = false; break; }
         }
         System.out.println("UC7 (Deque): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    /**
-     * UC8: Singly Linked List with Middle Finding and In-Place Reversal
-     */
+    // UC8: Linked List
     public static void checkWithLinkedList() {
         String original = "malayalam";
         Node head = null, temp = null;
@@ -164,43 +110,36 @@ public class PalindromeChecker {
             if (head == null) { head = newNode; temp = head; }
             else { temp.next = newNode; temp = temp.next; }
         }
-
-        // Find middle using Fast & Slow pointers
         Node slow = head, fast = head;
-        while (fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-
-        // Reverse second half of linked list
+        while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
         Node prev = null, curr = slow;
-        while (curr != null) {
-            Node nextN = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = nextN;
-        }
-
-        // Compare first half and reversed second half
+        while (curr != null) { Node nX = curr.next; curr.next = prev; prev = curr; curr = nX; }
         Node f = head, s = prev;
         boolean isPal = true;
         while (s != null) {
             if (f.data != s.data) { isPal = false; break; }
-            f = f.next;
-            s = s.next;
+            f = f.next; s = s.next;
         }
         System.out.println("UC8 (Linked List): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    /**
-     * UC9: Recursive approach using the Call Stack
-     */
+    // UC9: Recursion
     public static boolean isPalindromeRecursive(String str, int start, int end) {
-        // Base case: markers meet or cross
         if (start >= end) return true;
-        // Check if characters at current markers match
         if (str.charAt(start) != str.charAt(end)) return false;
-        // Recur for the remaining inner substring
         return isPalindromeRecursive(str, start + 1, end - 1);
+    }
+
+    // UC10: Normalization (Spaces and Case)
+    public static void checkWithNormalization() {
+        String input = "Step on no pets";
+        // Remove spaces and make lowercase
+        String clean = input.replaceAll("\\s+", "").toLowerCase();
+
+        boolean isPal = true;
+        for (int i = 0, j = clean.length() - 1; i < j; i++, j--) {
+            if (clean.charAt(i) != clean.charAt(j)) { isPal = false; break; }
+        }
+        System.out.println("UC10 (Normalization): '" + input + "' " + (isPal ? "is a palindrome." : "is not a palindrome."));
     }
 }
