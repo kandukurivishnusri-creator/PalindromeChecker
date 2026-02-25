@@ -3,9 +3,10 @@ public class PalindromeChecker {
         displayWelcomeMessage();
         checkHardcodedPalindrome();
         checkWithManualReversal();
+        checkWithCharArray();
     }
-    //UC1
 
+    //UC1
     public static void displayWelcomeMessage() {
         System.out.println("------------------------------------------");
         System.out.println("Welcome to the Palindrome Checker App");
@@ -43,6 +44,30 @@ public class PalindromeChecker {
         } else {
             System.out.println(original + " is not a palindrome.");
         }
-        //UC4
+    }
+
+    //UC4
+    public static void checkWithCharArray() {
+        String original = "level";
+        char[] charArray = original.toCharArray();
+
+        boolean isPalindrome = true;
+        int left = 0;
+        int right = charArray.length - 1;
+
+        while (left < right) {
+            if (charArray[left] != charArray[right]) {
+                isPalindrome = false;
+                break;
+            }
+            left++;
+            right--;
+        }
+
+        if (isPalindrome) {
+            System.out.println(original + " is a palindrome.");
+        } else {
+            System.out.println(original + " is not a palindrome.");
+        }
     }
 }
