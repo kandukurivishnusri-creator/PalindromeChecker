@@ -4,12 +4,62 @@ import java.util.LinkedList;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
+/**
+ * UC8 & UC11: Node structure for Custom Linked List
+ */
 class Node {
     char data;
     Node next;
     Node(char data) { this.data = data; this.next = null; }
 }
 
+/**
+ * UC11: Object-Oriented Palindrome Service
+ * Goal: Encapsulate palindrome logic in a dedicated class.
+ * Principles: Encapsulation & Single Responsibility Principle (SRP).
+ */
+class PalindromeService {
+    // Encapsulation: Private data member
+    private String input;
+
+    // Constructor to initialize data
+    public PalindromeService(String input) {
+        this.input = input;
+    }
+
+    /**
+     * Logic to check palindrome using an internal Stack (LIFO).
+     * This separates the 'How' from the 'Where' (Driver class).
+     */
+    public boolean checkPalindrome() {
+        if (input == null) return false;
+
+        // Normalization: Removing spaces and converting to lowercase
+        String clean = input.replaceAll("\\s+", "").toLowerCase();
+
+        // Data Structure: Internal Stack
+        Stack<Character> stack = new Stack<>();
+        for (char c : clean.toCharArray()) {
+            stack.push(c);
+        }
+
+        StringBuilder reversed = new StringBuilder();
+        while (!stack.isEmpty()) {
+            reversed.append(stack.pop());
+        }
+
+        return clean.equals(reversed.toString());
+    }
+
+    // Getter to access encapsulated input
+    public String getInput() {
+        return this.input;
+    }
+}
+
+/**
+ * Main Application Class
+ */
 public class PalindromeChecker {
 
     public static void main(String[] args) {
@@ -22,13 +72,16 @@ public class PalindromeChecker {
         checkWithDeque(); // UC7
         checkWithLinkedList(); // UC8
 
-        // UC9 - Recursion
+        // UC9: Recursion
         String recWord = "rotator";
         boolean res9 = isPalindromeRecursive(recWord, 0, recWord.length() - 1);
         System.out.println("UC9 (Recursion): " + recWord + (res9 ? " is a palindrome." : " is not a palindrome."));
 
-        // UC10 - Preprocessing/Normalization
+        // UC10: Normalization
         checkWithNormalization();
+
+        // UC11: Object-Oriented Service call
+        performOOServiceCheck();
     }
 
     // UC1: Welcome Message
@@ -110,6 +163,7 @@ public class PalindromeChecker {
             if (head == null) { head = newNode; temp = head; }
             else { temp.next = newNode; temp = temp.next; }
         }
+        // Finding middle and reversing half
         Node slow = head, fast = head;
         while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
         Node prev = null, curr = slow;
@@ -133,7 +187,6 @@ public class PalindromeChecker {
     // UC10: Normalization (Spaces and Case)
     public static void checkWithNormalization() {
         String input = "Step on no pets";
-        // Remove spaces and make lowercase
         String clean = input.replaceAll("\\s+", "").toLowerCase();
 
         boolean isPal = true;
@@ -141,5 +194,17 @@ public class PalindromeChecker {
             if (clean.charAt(i) != clean.charAt(j)) { isPal = false; break; }
         }
         System.out.println("UC10 (Normalization): '" + input + "' " + (isPal ? "is a palindrome." : "is not a palindrome."));
+    }
+
+    // UC11: Execution Logic for OOPS Service
+    public static void performOOServiceCheck() {
+        // Instantiate the service with a complex sentence
+        PalindromeService service = new PalindromeService("Was it a car or a cat I saw");
+
+        // Use the checkPalindrome method
+        boolean result = service.checkPalindrome();
+
+        System.out.println("UC11 (OOPS Service): '" + service.getInput() + "' " +
+                (result ? "is a palindrome." : "is not a palindrome."));
     }
 }
