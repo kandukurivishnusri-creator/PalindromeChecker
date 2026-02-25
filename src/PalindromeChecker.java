@@ -1,9 +1,12 @@
+import java.util.Stack;
+
 public class PalindromeChecker {
     public static void main(String[] args) {
         displayWelcomeMessage();
         checkHardcodedPalindrome();
         checkWithManualReversal();
         checkWithCharArray();
+        checkWithStack();
     }
 
     //UC1
@@ -69,5 +72,28 @@ public class PalindromeChecker {
         } else {
             System.out.println(original + " is not a palindrome.");
         }
+    }
+
+    //UC5
+    public static void checkWithStack() {
+        String original = "noon";
+        Stack<Character> stack = new Stack<>();
+
+        for (int i = 0; i < original.length(); i++) {
+            stack.push(original.charAt(i));
+        }
+
+        String reversed = "";
+        while (!stack.isEmpty()) {
+            reversed += stack.pop();
+        }
+
+        if (original.equals(reversed)) {
+            System.out.println(original + " is a palindrome.");
+        } else {
+            System.out.println(original + " is not a palindrome.");
+        }
+        //UC6
+
     }
 }
