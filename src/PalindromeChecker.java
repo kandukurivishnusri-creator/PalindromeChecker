@@ -17,16 +17,10 @@ class Node {
 // UC12: Strategy Pattern Implementation
 // ==========================================
 
-/**
- * Strategy Interface
- */
 interface PalindromeStrategy {
     boolean isPalindrome(String input);
 }
 
-/**
- * Concrete Strategy 1: Using a Stack (LIFO)
- */
 class StackStrategy implements PalindromeStrategy {
     @Override
     public boolean isPalindrome(String input) {
@@ -39,9 +33,6 @@ class StackStrategy implements PalindromeStrategy {
     }
 }
 
-/**
- * Concrete Strategy 2: Using a Deque (Double-Ended Queue)
- */
 class DequeStrategy implements PalindromeStrategy {
     @Override
     public boolean isPalindrome(String input) {
@@ -55,20 +46,10 @@ class DequeStrategy implements PalindromeStrategy {
     }
 }
 
-/**
- * Context Class for Strategy Pattern (Used in UC11/12 logic)
- */
 class PalindromeService {
     private PalindromeStrategy strategy;
-
-    // Set strategy at runtime (Polymorphism)
-    public void setStrategy(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean check(String text) {
-        return strategy.isPalindrome(text);
-    }
+    public void setStrategy(PalindromeStrategy strategy) { this.strategy = strategy; }
+    public boolean check(String text) { return strategy.isPalindrome(text); }
 }
 
 // ==========================================
@@ -96,17 +77,20 @@ public class PalindromeChecker {
 
         // UC11 & UC12 - OOPS & Strategy Pattern
         checkWithStrategyPattern();
+
+        // UC13 - Performance Comparison
+        comparePerformance();
     }
 
-    // UC1
+    // UC1: Welcome Message
     public static void displayWelcomeMessage() {
         System.out.println("------------------------------------------");
         System.out.println("Welcome to the Palindrome Checker App");
-        System.out.println("Version: 1.0.0 (Strategy Pattern Ready)");
+        System.out.println("Version: 1.0.0 (Performance Profiling)");
         System.out.println("------------------------------------------");
     }
 
-    // UC2
+    // UC2: Basic Check
     public static void checkHardcodedPalindrome() {
         String original = "madam";
         String reversed = "";
@@ -114,7 +98,7 @@ public class PalindromeChecker {
         System.out.println("UC2 (Hardcoded): " + original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC3
+    // UC3: Manual Reversal
     public static void checkWithManualReversal() {
         String original = "radar";
         String reversed = "";
@@ -122,7 +106,7 @@ public class PalindromeChecker {
         System.out.println("UC3 (Manual Loop): " + original + (original.equals(reversed) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC4
+    // UC4: Char Array Two-Pointer
     public static void checkWithCharArray() {
         String original = "level";
         char[] arr = original.toCharArray();
@@ -133,7 +117,7 @@ public class PalindromeChecker {
         System.out.println("UC4 (Char Array): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC5
+    // UC5: Stack (LIFO)
     public static void checkWithStack() {
         String original = "noon";
         Stack<Character> stack = new Stack<>();
@@ -143,7 +127,7 @@ public class PalindromeChecker {
         System.out.println("UC5 (Stack): " + original + (original.equals(rev) ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC6
+    // UC6: Queue + Stack
     public static void checkWithQueueAndStack() {
         String original = "racecar";
         Queue<Character> q = new LinkedList<>();
@@ -156,7 +140,7 @@ public class PalindromeChecker {
         System.out.println("UC6 (Queue+Stack): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC7
+    // UC7: Deque
     public static void checkWithDeque() {
         String original = "deified";
         Deque<Character> dq = new ArrayDeque<>();
@@ -168,7 +152,7 @@ public class PalindromeChecker {
         System.out.println("UC7 (Deque): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC8
+    // UC8: Linked List
     public static void checkWithLinkedList() {
         String original = "malayalam";
         Node head = null, temp = null;
@@ -190,14 +174,14 @@ public class PalindromeChecker {
         System.out.println("UC8 (Linked List): " + original + (isPal ? " is a palindrome." : " is not a palindrome."));
     }
 
-    // UC9
+    // UC9: Recursion
     public static boolean isPalindromeRecursive(String str, int start, int end) {
         if (start >= end) return true;
         if (str.charAt(start) != str.charAt(end)) return false;
         return isPalindromeRecursive(str, start + 1, end - 1);
     }
 
-    // UC10
+    // UC10: Normalization
     public static void checkWithNormalization() {
         String input = "Step on no pets";
         String clean = input.replaceAll("\\s+", "").toLowerCase();
@@ -212,13 +196,37 @@ public class PalindromeChecker {
     public static void checkWithStrategyPattern() {
         String testInput = "Never odd or even";
         PalindromeService service = new PalindromeService();
-
-        // Dynamically injecting Stack Strategy
         service.setStrategy(new StackStrategy());
-        System.out.println("UC12 (Strategy - Stack): " + testInput + " -> " + service.check(testInput));
-
-        // Dynamically switching to Deque Strategy
+        service.check(testInput);
         service.setStrategy(new DequeStrategy());
-        System.out.println("UC12 (Strategy - Deque): " + testInput + " -> " + service.check(testInput));
+        service.check(testInput);
+        System.out.println("UC11/12 (OOPS & Strategy): Executed successfully.");
+    }
+
+    // UC13: Performance Comparison Logic
+    public static void comparePerformance() {
+        System.out.println("\n--- UC13: Performance Comparison (nanoseconds) ---");
+        String longText = "a".repeat(10000) + "b" + "a".repeat(10000); // 20,001 characters
+
+        // 1. Measure Stack Strategy
+        long startTime = System.nanoTime();
+        new StackStrategy().isPalindrome(longText);
+        long stackTime = System.nanoTime() - startTime;
+
+        // 2. Measure Deque Strategy
+        startTime = System.nanoTime();
+        new DequeStrategy().isPalindrome(longText);
+        long dequeTime = System.nanoTime() - startTime;
+
+        // 3. Measure Two-Pointer (Char Array)
+        startTime = System.nanoTime();
+        char[] arr = longText.toCharArray();
+        for (int i = 0, j = arr.length - 1; i < j; i++, j--) { if (arr[i] != arr[j]) break; }
+        long pointerTime = System.nanoTime() - startTime;
+
+        System.out.println("Stack Strategy Time  : " + stackTime + " ns");
+        System.out.println("Deque Strategy Time  : " + dequeTime + " ns");
+        System.out.println("Two-Pointer Time     : " + pointerTime + " ns");
+        System.out.println("--------------------------------------------------\n");
     }
 }
