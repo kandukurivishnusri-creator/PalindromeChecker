@@ -1,5 +1,9 @@
 import java.util.Stack;
 
+import java.util.Stack;
+import java.util.Queue;
+import java.util.LinkedList;
+
 public class PalindromeChecker {
     public static void main(String[] args) {
         displayWelcomeMessage();
@@ -7,9 +11,10 @@ public class PalindromeChecker {
         checkWithManualReversal();
         checkWithCharArray();
         checkWithStack();
+        checkWithQueueAndStack();
     }
 
-    //UC1
+    // UC1: Welcome Message
     public static void displayWelcomeMessage() {
         System.out.println("------------------------------------------");
         System.out.println("Welcome to the Palindrome Checker App");
@@ -17,7 +22,7 @@ public class PalindromeChecker {
         System.out.println("------------------------------------------");
     }
 
-    //UC2
+    // UC2: Hardcoded String Check
     public static void checkHardcodedPalindrome() {
         String original = "madam";
         String reversed = "";
@@ -33,7 +38,7 @@ public class PalindromeChecker {
         }
     }
 
-    //UC3
+    // UC3: Manual String Reversal
     public static void checkWithManualReversal() {
         String original = "radar";
         String reversed = "";
@@ -49,7 +54,7 @@ public class PalindromeChecker {
         }
     }
 
-    //UC4
+    // UC4: Two-Pointer with Character Array
     public static void checkWithCharArray() {
         String original = "level";
         char[] charArray = original.toCharArray();
@@ -74,7 +79,7 @@ public class PalindromeChecker {
         }
     }
 
-    //UC5
+    // UC5: Stack-Based Reversal (LIFO)
     public static void checkWithStack() {
         String original = "noon";
         Stack<Character> stack = new Stack<>();
@@ -93,7 +98,37 @@ public class PalindromeChecker {
         } else {
             System.out.println(original + " is not a palindrome.");
         }
-        //UC6
+    }
+
+    // UC6: Queue (FIFO) + Stack (LIFO) Comparison
+    public static void checkWithQueueAndStack() {
+        String original = "racecar";
+        Queue<Character> queue = new LinkedList<>();
+        Stack<Character> stack = new Stack<>();
+
+        for (int i = 0; i < original.length(); i++) {
+            char ch = original.charAt(i);
+            queue.add(ch);
+            stack.push(ch);
+        }
+
+        boolean isPalindrome = true;
+        while (!queue.isEmpty()) {
+            // Queue pulls from front, Stack pulls from back
+            if (!queue.remove().equals(stack.pop())) {
+                isPalindrome = false;
+                break;
+            }
+        }
+
+        if (isPalindrome) {
+            System.out.println(original + " is a palindrome.");
+        } else {
+            System.out.println(original + " is not a palindrome.");
+        }
+
+        //UC7
+
 
     }
 }
